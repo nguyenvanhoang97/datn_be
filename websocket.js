@@ -47,7 +47,6 @@ wsServer.on('request', function (request) {
 app.get('/', (req, res) => {
   if (kitConnect === null) {
     res.send(dataTest);
-    // kitConnect.send('Server connect!!!')
   } else {
     res.send('Connect server error')
   }
