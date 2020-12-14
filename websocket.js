@@ -1,45 +1,80 @@
-var WebSocketServer = require('websocket').server;
-var http = require('http');
-const express=require('express')
-const app=express()
-app.listen(3001)
-var server = http.createServer(function (request, response) {
-  // process HTTP request. Since we're writing just WebSockets
-  // server we don't have to implement anything.
+const WebSocketServer = require('websocket').server;
+const http = require('http');
+const cors = require('cors');
+const express = require('express')
+
+const bodyParser = require('body-parser')
+const app = express()
+app.use(cors())
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: false }))
+app.listen(3001, console.log('Server run 3001'))
+
+const server = http.createServer(function (request, response) {
+  
 });
 server.listen(3000, function () { });
+let data = {}
 
-// create the server
+let dataTest = {
+  humi: '50',
+  temp: '29',
+  soil: '43'
+}
+
 wsServer = new WebSocketServer({
   httpServer: server
 });
-let kitCOnnect=null
-// WebSocket server
-wsServer.on('request', function (request) {
-  var connection = request.accept(null, request.origin);
+let kitConnect = null
 
-  // This is the most important callback for us, we'll handle
-  // all messages from users here.
+wsServer.on('request', function (request) {
+  const connection = request.accept(null, request.origin);
+
   connection.on('message', function (message) {
-    console.log(message)
     if (message.type === 'utf8') {
-      // process WebSocket message
       const { utf8Data } = message
+      data = utf8Data
       connection.send(utf8Data)
-      kitCOnnect=connection
+      kitConnect = connection
     }
   });
 
-  connection.on('close', function (connection) {
-    kitCOnnect=null
-    // close user connection
+  connection.on('close', function () {
+    kitConnect = null
   });
 });
-app.get('/',(req,res)=>{
-  if(kitCOnnect){
-  kitCOnnect.send("DMCC")
-  res.send("ok")
-  }else{
-    res.send("deo coonect")
+
+app.get('/', (req, res) => {
+  if (kitConnect === null) {
+    res.send(dataTest);
+    // kitConnect.send('Server connect!!!')
+  } else {
+    res.send('Connect server error')
+  }
+})
+app.post('/sendMotor', (req, res) => {
+  console.log(req.body.status);
+  if (kitConnect === null) {
+    // kitConnect.send(req.body.status)
+    if (req.body.status === 'MOTOR_ON') {
+      res.send('MOTOR_ON')
+    } else {
+      res.send('MOTOR_OFF')
+    }
+  } else {
+    res.send('')
+  }
+})
+app.post('/sendAuto', (req, res) => {
+  console.log(req.body.status);
+  if (kitConnect === null) {
+    // kitConnect.send(req.body.status)
+    if (req.body.status === 'AUTO_ON') {
+      res.send('AUTO_ON')
+    } else {
+      res.send('AUTO_OFF')
+    }
+  } else {
+    res.send('')
   }
 })
