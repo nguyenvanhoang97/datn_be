@@ -16,12 +16,6 @@ const server = http.createServer(function (request, response) {
 server.listen(3000, function () { });
 let data = {}
 
-let dataTest = {
-  humi: '50',
-  temp: '29',
-  soil: '43'
-}
-
 wsServer = new WebSocketServer({
   httpServer: server
 });
@@ -45,16 +39,16 @@ wsServer.on('request', function (request) {
 });
 
 app.get('/', (req, res) => {
-  if (kitConnect === null) {
-    res.send(dataTest);
+  if (kitConnect) {
+    res.send(data);
   } else {
     res.send('Connect server error')
   }
 })
 app.post('/sendMotor', (req, res) => {
   console.log(req.body.status);
-  if (kitConnect === null) {
-    // kitConnect.send(req.body.status)
+  if (kitConnect) {
+    kitConnect.send(req.body.status)
     if (req.body.status === 'MOTOR_ON') {
       res.send('MOTOR_ON')
     } else {
@@ -66,8 +60,8 @@ app.post('/sendMotor', (req, res) => {
 })
 app.post('/sendAuto', (req, res) => {
   console.log(req.body.status);
-  if (kitConnect === null) {
-    // kitConnect.send(req.body.status)
+  if (kitConnect) {
+    kitConnect.send(req.body.status)
     if (req.body.status === 'AUTO_ON') {
       res.send('AUTO_ON')
     } else {
