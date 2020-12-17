@@ -55,7 +55,7 @@ app.post('/sendMotor', (req, res) => {
       res.send('MOTOR_OFF')
     }
   } else {
-    res.send('')
+    res.send('MOTOR_ERROR')
   }
 })
 app.post('/sendAuto', (req, res) => {
@@ -68,6 +68,6 @@ app.post('/sendAuto', (req, res) => {
       res.send('AUTO_OFF')
     }
   } else {
-    res.send('')
+    res.send('AUTO_ERROR')
   }
 })
