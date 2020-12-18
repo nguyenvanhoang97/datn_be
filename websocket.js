@@ -15,6 +15,11 @@ const server = http.createServer(function (request, response) {
 });
 server.listen(3000, function () { });
 let data = {}
+let dataTest = {
+  humidity: 65,
+  temperature: 12,
+  soil_moisture: 68
+}
 
 wsServer = new WebSocketServer({
   httpServer: server
@@ -40,9 +45,15 @@ wsServer.on('request', function (request) {
 
 app.get('/', (req, res) => {
   if (kitConnect) {
-    res.send(data);
+    res.send({
+      status: 200,
+      data: data
+    });
   } else {
-    res.send('Connect server error')
+    res.send({
+      status: 200,
+      data: dataTest
+    })
   }
 })
 app.post('/sendMotor', (req, res) => {
