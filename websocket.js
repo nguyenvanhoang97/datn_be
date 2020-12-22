@@ -18,7 +18,8 @@ let data = {}
 let dataTest = {
   humidity: 65,
   temperature: 12,
-  soil_moisture: 68
+  soil_moisture: 68,
+  status_motor: 1
 }
 
 wsServer = new WebSocketServer({
